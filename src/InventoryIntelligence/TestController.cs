@@ -12,25 +12,25 @@ public class TestController : ControllerBase
     {
         return Ok($"Recieved Test Get Request");
     }
-    
+
     [HttpPost]
     public IActionResult TestPost(PayloadExample payload)
     {
         return Ok($"Received POST for id={payload.Id}, name={payload.Name}");
     }
-    
+
     [HttpPut]
     public IActionResult TestPut(PayloadExample payload)
     {
         return Ok($"Received PUT for id={payload.Id}, new name={payload.Name}");
     }
-    
+
     [HttpPatch]
     public IActionResult TestPatch(PayloadExample payload)
     {
         return Ok($"Received PATCH for id={payload.Id}, patch new name={payload.Name}");
     }
-    
+
     [HttpDelete]
     public IActionResult TestDelete(int id)
     {
