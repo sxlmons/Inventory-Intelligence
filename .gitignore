@@ -214,3 +214,6 @@ FakesAssemblies/
 
 # IDE files #
 .idea/
+
+# env secrets
+.env
