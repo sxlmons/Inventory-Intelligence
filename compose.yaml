@@ -16,15 +16,18 @@
       timeout: 5s
       retries: 5
     restart: unless-stopped
- # this is a test
-  liquibase:
-    image: liquibase/liquibase:latest
+
+  flyway:
+    image: flyway/flyway:9.21.1
+    container_name: inventory_flyway
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     volumes:
-      - ./liquibase:/liquibase
-    working_dir: /liquibase
-    command: ["update"]  # default command, can be overridden
+      - ./migration:/flyway/sql   # Mount migration scripts
+      - ./flyway.conf:/flyway/conf/flyway.conf   # Mount Flyway config
+    command: migrate
+ 
   api:
     build:
       context: .
