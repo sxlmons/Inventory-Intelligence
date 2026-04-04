@@ -11,8 +11,7 @@ RUN dotnet restore
 COPY . .
 RUN dotnet publish src/InventoryIntelligence/InventoryIntelligence.csproj \
     -c Release \
-    -o /app/publish \
-    --no-restore 
+    -o /app/publish
 
 # Stage 2: Runtime 
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS runtime

@@ -1,0 +1,72 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.15.xsd">
+
+    <changeSet id="create-product-table" author="you">
+
+        <createTable tableName="product">
+            <column name="product_id" type="integer" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="product_pkey"/>
+            </column>
+
+            <column name="vendor_id" type="integer">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="category_id" type="integer">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="product_name" type="varchar(40)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="unit_of_measure" type="varchar(3)" defaultValue="kg">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="avg_weight_per" type="double precision" defaultValueNumeric="0.00">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="price_per_unit_of_weight" type="double precision" defaultValueNumeric="0.00">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="stocked_at" type="timestamp"
+                    defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated_at" type="timestamp"
+                    defaultValueComputed="CURRENT_TIMESTAMP"/>
+        </createTable>
+
+        <!-- Foreign key: category -->
+        <addForeignKeyConstraint
+                baseTableName="product"
+                baseColumnNames="category_id"
+                constraintName="product_category_id_fkey"
+                referencedTableName="category"
+                referencedColumnNames="category_id"/>
+
+        <!-- Foreign key: vendor -->
+        <addForeignKeyConstraint
+                baseTableName="product"
+                baseColumnNames="vendor_id"
+                constraintName="product_vendor_id_fkey"
+                referencedTableName="vendor"
+                referencedColumnNames="vendor_id"/>
+        <createIndex indexName="idx_product_category" tableName="product">
+            <column name="category_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_product_vendor" tableName="product">
+            <column name="vendor_id"/>
+        </createIndex>
+        
+    </changeSet>
+
+</databaseChangeLog>

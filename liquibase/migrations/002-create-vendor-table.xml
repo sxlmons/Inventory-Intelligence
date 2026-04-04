@@ -1,0 +1,26 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.15.xsd">
+
+    <changeSet id="create-vendor-table" author="you">
+
+        <createTable tableName="vendor">
+            <column name="vendor_id" type="integer" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="vendor_pkey"/>
+            </column>
+
+            <column name="name" type="varchar(30)"/>
+
+            <column name="dominant_product" type="varchar(30)"/>
+
+            <column name="contact_email" type="varchar(30)"/>
+
+            <column name="created_at" type="timestamp"
+                    defaultValueComputed="CURRENT_TIMESTAMP"/>
+        </createTable>
+
+    </changeSet>
+
+</databaseChangeLog>

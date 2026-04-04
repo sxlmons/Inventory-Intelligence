@@ -7,7 +7,7 @@
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "5433:5433"
+      - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -16,7 +16,15 @@
       timeout: 5s
       retries: 5
     restart: unless-stopped
-
+ # this is a test
+  liquibase:
+    image: liquibase/liquibase:latest
+    depends_on:
+      - db
+    volumes:
+      - ./liquibase:/liquibase
+    working_dir: /liquibase
+    command: ["update"]  # default command, can be overridden
   api:
     build:
       context: .
