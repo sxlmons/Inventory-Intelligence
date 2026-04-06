@@ -1,4 +1,5 @@
 ﻿services:
+  
   db:
     image: postgres:17
     container_name: inventory_db
@@ -25,7 +26,13 @@
         condition: service_healthy
     volumes:
       - ./migration:/flyway/sql   # Mount migration scripts
-      - ./flyway.conf:/flyway/conf/flyway.conf   # Mount Flyway config
+    
+    environment:
+      - FLYWAY_URL=jdbc:postgresql://db:5432/${POSTGRES_DB}
+      - FLYWAY_USER=${POSTGRES_USER}
+      - FLYWAY_PASSWORD=${POSTGRES_PASSWORD}
+      - FLYWAY_BASELINE_ON_MIGRATE=true
+      - FLYWAY_LOCATIONS=filesystem:/flyway/sql
     command: migrate
  
   api:
