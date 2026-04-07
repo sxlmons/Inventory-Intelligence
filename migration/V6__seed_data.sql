@@ -1,19 +1,37 @@
 -- SEED CATEGORY TABLE
 
 -- Common
-INSERT INTO Category (category_name)VALUES('Most Common');
-INSERT INTO Category (parent_category_id,category_name,level_of_category)VALUES(1,'Fruit',2); 
-INSERT INTO Category (parent_category_id,category_name,level_of_category)VALUES(1,'Vegetables',2); 
-INSERT INTO Category (parent_category_id,category_name,level_of_category)VALUES(1,'Canned Goods',2); 
-INSERT INTO Category (parent_category_id,category_name,level_of_category)VALUES(1,'Dairy',2); 
+WITH parent AS (
+    INSERT INTO Category (category_name)
+    VALUES ('Most Common')
+    RETURNING category_id
+),
+meat AS (
+    INSERT INTO Category (parent_category_id, category_name, level_of_category)
+    SELECT category_id, 'Meat', 2 FROM parent
+    RETURNING category_id
+)
+INSERT INTO Category (parent_category_id, category_name, level_of_category)
+SELECT category_id, 'Fruit', 2 FROM parent
+UNION ALL
+SELECT category_id, 'Vegetables', 2 FROM parent
+UNION ALL
+SELECT category_id, 'Canned Goods', 2 FROM parent
+UNION ALL
+SELECT category_id, 'Dairy', 2 FROM parent
+UNION ALL
 
 -- Meats
-INSERT INTO Category (parent_category_id,category_name,level_of_category)VALUES(1,'Meat',2); -- ************************** Also Most Common
-INSERT INTO Category (parent_category_id,category_name,level_of_category)VALUES(6,'Beef',3); 
-INSERT INTO Category (parent_category_id,category_name,level_of_category)VALUES(6,'Venison',3);
-INSERT INTO Category (parent_category_id,category_name,level_of_category)VALUES(6,'Pork' ,3);
-INSERT INTO Category (parent_category_id,category_name,level_of_category)VALUES(6,'Chicken',3);
-INSERT INTO Category (parent_category_id,category_name,level_of_category)VALUES(6,'Deli',3);
+SELECT category_id, 'Beef', 3 FROM meat
+UNION ALL
+SELECT category_id, 'Vension', 3 FROM meat
+UNION ALL
+SELECT category_id, 'Pork', 3 FROM meat
+UNION ALL
+SELECT category_id, 'Chicken', 3 FROM meat
+UNION ALL
+SELECT category_id, 'Deli', 3 FROM meat;
+
 
 -- Fish/Seafood
 INSERT INTO Category (category_name)VALUES('Fish');
@@ -27,17 +45,83 @@ INSERT INTO Category (category_name)VALUES('Snacks');
 INSERT INTO Category (category_name)VALUES('Baking');
 INSERT INTO Category (category_name)VALUES('Frozen Foods');
 
-INSERT INTO Category (category_name)VALUES('Grains');
-INSERT INTO Category (parent_category_id,category_name,level_of_category)VALUES(17,'Bread and Pastry',2);
-INSERT INTO Category (parent_category_id,category_name,level_of_category)VALUES(17,'Pasta',2);
-INSERT INTO Category (parent_category_id,category_name,level_of_category)VALUES(17,'Rice', 2);
-INSERT INTO Category (parent_category_id,category_name,level_of_category)VALUES(17,'Cereal', 2);
+-- Grains
+WITH parent AS (
+    INSERT INTO Category (category_name)
+    VALUES ('Grains')
+    RETURNING category_id
+)
+INSERT INTO Category (parent_category_id, category_name, level_of_category)
+SELECT category_id, 'Bread and Pastry', 2 FROM parent
+UNION ALL
+SELECT category_id, 'Pasta', 2 FROM parent
+UNION ALL
+SELECT category_id, 'Rice', 2 FROM parent
+UNION ALL
+SELECT category_id, 'Cereal', 2 FROM parent;
 
+--  _______FRUIT_VENDOR_______________________________________________FRUIT_VENDOR_________________________________________________FRUIT_VENDOR________________________________________________________
 
---  _______VENDORS_______________________________________________VENDORS_________________________________________________VENDORS________________________________________________________
+WITH vendors AS (
+    INSERT INTO vendor (name, dominant_product, contact_email)
+    VALUES ('Martins Family Fruit Farm', 'Fruit', 'MartinsApples@gmail.com')
+    RETURNING vendor_id
+),
+fruitcat AS (
+    SELECT category_id 
+    FROM category 
+    WHERE category_name = 'Fruit'
+)
+INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
+SELECT v.vendor_id, c.category_id, 'Gala Apples', 'kg', 0.18, 3.49 FROM vendors v
+CROSS JOIN fruitcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Granny Smith Apples', 'kg', 0.20, 3.79 FROM vendors v
+CROSS JOIN fruitcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Honeycrisp Apples', 'kg', 0.22, 4.99 FROM vendors v
+CROSS JOIN fruitcat c
+UNION ALL 
+SELECT v.vendor_id, c.category_id, 'Fuji Apples', 'kg', 0.21, 3.99 FROM vendors v
+CROSS JOIN fruitcat c
+UNION ALL 
+SELECT v.vendor_id, c.category_id, 'Red Delicious Apples', 'kg', 0.19, 2.99 FROM vendors v
+CROSS JOIN fruitcat c
+UNION ALL 
+SELECT v.vendor_id, c.category_id, 'Bananas', 'kg', 0.15, 1.29 FROM vendors v
+CROSS JOIN fruitcat c
+UNION ALL 
+SELECT v.vendor_id, c.category_id, 'Oranges', 'kg',  0.25, 2.49 FROM vendors v
+CROSS JOIN fruitcat c
+UNION ALL 
+SELECT v.vendor_id, c.category_id, 'Strawberries', 'kg', 0.02, 6.99 FROM vendors v
+CROSS JOIN fruitcat c
+UNION ALL 
+SELECT v.vendor_id, c.category_id, 'Blueberries', 'kg', 0.0015, 8.99 FROM vendors v
+CROSS JOIN fruitcat c
+UNION ALL 
+SELECT v.vendor_id, c.category_id, 'Grapes', 'kg', 0.005, 5.49 FROM vendors v
+CROSS JOIN fruitcat c
+UNION ALL 
+SELECT v.vendor_id, c.category_id, 'Pineapple', 'kg', 1.20, 3.99 FROM vendors v
+CROSS JOIN fruitcat c
+UNION ALL 
+SELECT v.vendor_id, c.category_id, 'Mango', 'kg', 0.30, 4.49 FROM vendors v
+CROSS JOIN fruitcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Granny Smith Apples', 'kg', 0.20, 3.79 FROM vendors v
+CROSS JOIN fruitcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Avocado', 'kg', 0.20, 2.99 FROM vendors v
+CROSS JOIN fruitcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Granny Smith Apples', 'kg', 0.20, 3.79 FROM vendors v
+CROSS JOIN fruitcat c;
 
-INSERT INTO vendor (name, dominant_product, contact_email)
-VALUES ('Fresh Farms Co', 'Fruit', 'contact@freshfarms.com');
+VALUES ("Martin's Family Fruit Farm", 'Fruit', 'MartinsApples@gmail.com');
+
+INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
+VALUES (6, 2, 'Gala Apples', 'kg', 0.18, 3.49);
 
 INSERT INTO vendor (name, dominant_product, contact_email)
 VALUES ('Green Valley Produce', 'Vegetables', 'sales@greenvalleyproduce.com');
@@ -51,13 +135,11 @@ VALUES ('Prime Meat Distributors', 'Beef', 'support@primemeat.com');
 INSERT INTO vendor (name, dominant_product, contact_email)
 VALUES ('DairyBest Ltd', 'Dairy', 'hello@dairybest.com');
 
-INSERT INTO vendor (name, dominant_product, contact_email)
-VALUES ("Martin's Family Fruit Farm", 'Fruit', 'MartinsApples@gmail.com');
+
 
 --  _______FRUITS________________________________________________FRUITS_________________________________________________FRUITS________________________________________________
 -- Apples
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (6, 2, 'Gala Apples', 'kg', 0.18, 3.49);
+
 INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
 VALUES (2, 2, 'Gala Apples', 'kg', 0.18, 3.49);
 
