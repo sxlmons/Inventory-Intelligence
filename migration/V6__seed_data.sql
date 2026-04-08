@@ -118,175 +118,415 @@ UNION ALL
 SELECT v.vendor_id, c.category_id, 'Granny Smith Apples', 'kg', 0.20, 3.79 FROM vendors v
 CROSS JOIN fruitcat c;
 
-VALUES ("Martin's Family Fruit Farm", 'Fruit', 'MartinsApples@gmail.com');
+--  _______VEGETABLE_VENDOR_______________________________________________VEGETABLE_VENDOR_________________________________________________VEGETABLE_VENDOR________________________________________________________
 
+WITH vendors AS (
+    INSERT INTO vendor (name, dominant_product, contact_email)
+    VALUES ('Green Valley Produce', 'Vegetables', 'sales@greenvalleyproduce.com')
+    RETURNING vendor_id
+),
+vegcat AS (
+    SELECT category_id 
+    FROM category 
+    WHERE category_name = 'Vegetables'
+)
 INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (6, 2, 'Gala Apples', 'kg', 0.18, 3.49);
+SELECT v.vendor_id, c.category_id, 'Carrots', 'kg', 0.10, 1.99 FROM vendors v
+CROSS JOIN vegcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Potatoes', 'kg', 0.20, 1.49 FROM vendors v
+CROSS JOIN vegcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Sweet Potatoes', 'kg', 0.25, 2.49 FROM vendors v
+CROSS JOIN vegcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Onions', 'kg', 0.15, 1.79 FROM vendors v
+CROSS JOIN vegcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Lettuce', 'kg', 0.30, 2.99 FROM vendors v
+CROSS JOIN vegcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Spinach', 'kg',  0.05, 4.99 FROM vendors v
+CROSS JOIN vegcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Kale', 'kg', 0.08, 3.99 FROM vendors v
+CROSS JOIN vegcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Broccoli', 'kg', 0.40, 2.99 FROM vendors v
+CROSS JOIN vegcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Cauliflower', 'kg', 0.80, 3.49 FROM vendors v
+CROSS JOIN vegcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Bell Peppers', 'kg', 0.15, 4.49 FROM vendors v
+CROSS JOIN vegcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Zucchini', 'kg', 0.20, 2.79 FROM vendors v
+CROSS JOIN vegcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Cucumber', 'kg', 0.30, 1.99 FROM vendors v
+CROSS JOIN vegcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Tomatoes', 'kg', 0.12, 3.99 FROM vendors v
+CROSS JOIN vegcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Mushrooms', 'kg', 0.02, 6.99 FROM vendors v
+CROSS JOIN vegcat c;
 
-INSERT INTO vendor (name, dominant_product, contact_email)
-VALUES ('Green Valley Produce', 'Vegetables', 'sales@greenvalleyproduce.com');
+
+
+-- _______SEAFOOD_VENDOR_______________________________________________SEAFOOD_VENDOR_________________________________________________SEAFOOD_VENDOR________________________________________________________
 
 INSERT INTO vendor (name, dominant_product, contact_email)
 VALUES ('OceanCatch Supplies', 'Seafood', 'info@oceancatch.com');
 
-INSERT INTO vendor (name, dominant_product, contact_email)
-VALUES ('Prime Meat Distributors', 'Beef', 'support@primemeat.com');
+--  _______MEAT_VENDOR_______________________________________________MEAT_VENDOR_________________________________________________MEAT_VENDOR________________________________________________________
+
+WITH vendors AS (
+    INSERT INTO vendor (name, dominant_product, contact_email)
+    VALUES ('Prime Meat Distributors', 'Beef', 'support@primemeat.com')
+    RETURNING vendor_id
+),
+beefcat AS (
+    SELECT category_id 
+    FROM category 
+    WHERE category_name = 'Beef'
+),
+vencat AS (
+    SELECT category_id 
+    FROM category 
+    WHERE category_name = 'Venison'
+),
+porkcat AS (
+    SELECT category_id 
+    FROM category 
+    WHERE category_name = 'Pork'
+),
+chickencat AS (
+    SELECT category_id 
+    FROM category 
+    WHERE category_name = 'Chicken'
+),
+delicat AS (
+    SELECT category_id 
+    FROM category 
+    WHERE category_name = 'Deli'
+)
+INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
+SELECT v.vendor_id, c.category_id, 'Ground Beef', 'kg',  0.50, 8.99 FROM vendors v
+CROSS JOIN beefcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Ribeye Steak', 'kg', 0.30, 24.99 FROM vendors v
+CROSS JOIN beefcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Sirloin Steak', 'kg', 0.28, 19.99 FROM vendors v
+CROSS JOIN beefcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Venison Steak', 'kg', 0.30, 29.99 FROM vendors v
+CROSS JOIN vencat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Ground Venison', 'kg', 0.50, 22.99 FROM vendors v
+CROSS JOIN vencat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Pork Chops', 'kg', 0.25, 9.49 FROM vendors v
+CROSS JOIN porkcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Bacon', 'kg', 0.20, 12.99 FROM vendors v
+CROSS JOIN porkcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Pork Shoulder', 'kg', 1.50, 7.99 FROM vendors v
+CROSS JOIN porkcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Whole Chicken', 'kg', 1.60, 5.49 FROM vendors v
+CROSS JOIN chickencat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Chicken Breast', 'kg', 0.25, 11.99 FROM vendors v
+CROSS JOIN chickencat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Chicken Thighs', 'kg', 0.20, 8.99 FROM vendors v
+CROSS JOIN chickencat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Turkey Slices', 'kg', 0.01, 18.99 FROM vendors v
+CROSS JOIN delicat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Ham Slices', 'kg', 0.01, 16.99 FROM vendors v
+CROSS JOIN delicat c;
+
+-- _______DAIRY_VENDOR_______________________________________________DAIRY_VENDOR_________________________________________________DAIRY_VENDOR________________________________________________________
 
 INSERT INTO vendor (name, dominant_product, contact_email)
 VALUES ('DairyBest Ltd', 'Dairy', 'hello@dairybest.com');
 
-
-
---  _______FRUITS________________________________________________FRUITS_________________________________________________FRUITS________________________________________________
--- Apples
-
+WITH vendors AS (
+    INSERT INTO vendor (name, dominant_product, contact_email)
+    VALUES ('DairyBest Ltd', 'Dairy', 'hello@dairybest.com')
+    RETURNING vendor_id
+),
+milkcat AS (
+    SELECT category_id 
+    FROM category 
+    WHERE category_name = 'Dairy'
+)
 INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (2, 2, 'Gala Apples', 'kg', 0.18, 3.49);
+SELECT v.vendor_id, c.category_id, 'Whole Milk', 'L', 1.00, 2.49 FROM vendors v
+CROSS JOIN milkcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, '2% Milk', 'L', 1.00, 2.39 FROM vendors v
+CROSS JOIN milkcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Skim Milk', 'L', 1.00, 2.29 FROM vendors v
+CROSS JOIN milkcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Heavy Cream', 'L', 0.50, 4.99 FROM vendors v
+CROSS JOIN milkcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Half-and-Half Cream', 'L', 0.50, 3.99 FROM vendors v
+CROSS JOIN milkcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Butter', 'kg', 0.25, 8.99 FROM vendors v
+CROSS JOIN milkcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Cheddar Cheese', 'kg', 0.30, 12.99 FROM vendors v
+CROSS JOIN milkcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Mozzarella Cheese', 'kg', 0.30, 11.99 FROM vendors v
+CROSS JOIN milkcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Greek Yogurt', 'kg', 0.50, 6.49 FROM vendors v
+CROSS JOIN milkcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Regular Yogurt', 'kg', 0.50, 4.99 FROM vendors v
+CROSS JOIN milkcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Sour Cream', 'kg', 0.25, 5.49 FROM vendors v
+CROSS JOIN milkcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Cottage Cheese', 'kg', 0.50, 5.99 FROM vendors v
+CROSS JOIN milkcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Ice Cream', 'L', 1.00, 7.99 FROM vendors v
+CROSS JOIN milkcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Evaporated Milk', 'L', 0.35, 3.49 FROM vendors v
+CROSS JOIN milkcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Condensed Milk', 'L', 0.35, 3.99 FROM vendors v
+CROSS JOIN milkcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Large Eggs (Dozen)', 'kg', 0.70, 3.99 FROM vendors v
+CROSS JOIN milkcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Free-Range Eggs (Dozen)', 'kg', 0.70, 4.99 FROM vendors v
+CROSS JOIN milkcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Brown Eggs (Dozen)', 'kg', 0.70, 4.49 FROM vendors v
+CROSS JOIN milkcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Organic Eggs (Dozen)', 'kg', 0.70, 5.99 FROM vendors v
+CROSS JOIN milkcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Hard-Boiled Eggs Pack', 'kg', 0.30, 4.49 FROM vendors v
+CROSS JOIN milkcat c;
 
+-- _______GRAINS_VENDOR_______________________________________________GRAINS_VENDOR_________________________________________________GRAINS_VENDOR________________________________________________________
+
+WITH vendors AS (
+    INSERT INTO vendor (name, dominant_product, contact_email)
+    VALUES ('Stone Mills Waterloo', 'Bread and Pastry', 'stonemillsKW@gmail.com')
+    RETURNING vendor_id
+),
+breadcat AS (
+    SELECT category_id 
+    FROM category 
+    WHERE category_name = 'Bread and Pastry'
+),
+noodlecat AS (
+    SELECT category_id 
+    FROM category 
+    WHERE category_name = 'Pasta'
+),
+ricecat AS (
+    SELECT category_id 
+    FROM category 
+    WHERE category_name = 'Rice'
+),
+cerealcat AS (
+    SELECT category_id 
+    FROM category 
+    WHERE category_name = 'Cereal'
+)
 INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (6, 2, 'Granny Smith Apples', 'kg', 0.20, 3.79);
+SELECT v.vendor_id, c.category_id, 'White Bread Loaf', 'kg', 0.60, 2.99 FROM vendors v
+CROSS JOIN breadcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Whole Wheat Bread Loaf', 'kg', 0.60, 3.49 FROM vendors v
+CROSS JOIN breadcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Multigrain Bread', 'kg', 0.65, 3.79 FROM vendors v
+CROSS JOIN breadcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Baguette', 'kg', 0.30, 2.49 FROM vendors v
+CROSS JOIN breadcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Croissant', 'kg', 0.08, 1.99 FROM vendors v
+CROSS JOIN breadcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Bagels (Pack of 6)', 'kg', 0.50, 4.49 FROM vendors v
+CROSS JOIN breadcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Muffins (Pack of 4)', 'kg', 0.40, 3.99 FROM vendors v
+CROSS JOIN breadcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Spaghetti', 'kg', 0.50, 2.49 FROM vendors v
+CROSS JOIN noodlecat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Penne Pasta', 'kg', 0.50, 2.59 FROM vendors v
+CROSS JOIN noodlecat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Fusilli Pasta', 'kg', 0.50, 2.69 FROM vendors v
+CROSS JOIN noodlecat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Macaroni', 'kg', 0.50, 2.39 FROM vendors v
+CROSS JOIN noodlecat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Lasagna Sheets', 'kg', 0.50, 3.29 FROM vendors v
+CROSS JOIN noodlecat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'White Rice', 'kg', 1.00, 2.19 FROM vendors v
+CROSS JOIN ricecat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Brown Rice', 'kg', 1.00, 2.79 FROM vendors v
+CROSS JOIN ricecat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Corn Flakes', 'kg', 0.50, 4.49 FROM vendors v
+CROSS JOIN cerealcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Oatmeal', 'kg', 1.00, 3.29 FROM vendors v
+CROSS JOIN cerealcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Granola', 'kg', 0.50, 5.99 FROM vendors v
+CROSS JOIN cerealcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Bran Cereal', 'kg', 0.50, 4.79 FROM vendors v
+CROSS JOIN cerealcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Rice Cereal', 'kg', 0.50, 4.29 FROM vendors v
+CROSS JOIN cerealcat c;
 
+-- _______FISH_AND_SEAFOOD_VENDOR_______________________________________________FISH_AND_SEAFOOD_VENDOR_________________________________________________FISH_AND_SEAFOOD_VENDOR________________________________________________________
+
+WITH vendors AS (
+    INSERT INTO vendor (name, dominant_product, contact_email)
+    VALUES ('Canadian Fish Farm', 'Fish', 'CFFNational@gmail.com')
+    RETURNING vendor_id
+),
+fishcat AS (
+    SELECT category_id 
+    FROM category 
+    WHERE category_name = 'Fish'
+),
+seacat AS (
+    SELECT category_id 
+    FROM category 
+    WHERE category_name = 'Seafood'
+)
 INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (6, 2, 'Honeycrisp Apples', 'kg', 0.22, 4.99);
+SELECT v.vendor_id, c.category_id, 'Walleye Fillet', 'kg', 0.30, 21.99 FROM vendors v
+CROSS JOIN fishcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Yellow Perch Fillet', 'kg', 0.25, 19.99 FROM vendors v
+CROSS JOIN fishcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Lake Trout Fillet', 'kg', 0.35, 18.49 FROM vendors v
+CROSS JOIN fishcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Whitefish Fillet', 'kg', 0.30, 16.99 FROM vendors v
+CROSS JOIN fishcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Northern Pike Fillet', 'kg', 0.40, 14.99 FROM vendors v
+CROSS JOIN fishcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Rainbow Trout', 'kg', 0.35, 15.99 FROM vendors v
+CROSS JOIN fishcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Atlantic Salmon', 'kg', 0.30, 17.99 FROM vendors v
+CROSS JOIN fishcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Haddock Fillet', 'kg', 0.30, 14.99 FROM vendors v
+CROSS JOIN fishcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id,  'Canadian Lobster', 'kg', 1.20, 28.99 FROM vendors v
+CROSS JOIN seacat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Snow Crab Legs', 'kg', 0.80, 26.99 FROM vendors v
+CROSS JOIN seacat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'PEI Mussels', 'kg', 1.00, 6.49 FROM vendors v
+CROSS JOIN seacat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Atlantic Clams', 'kg', 1.00, 7.49 FROM vendors v
+CROSS JOIN seacat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Bay Scallops', 'kg', 0.30, 23.99 FROM vendors v
+CROSS JOIN seacat c
+UNION ALL
+SELECT v.vendor_id, c.category_id,  'Smoked Lake Whitefish', 'kg', 0.25, 29.99 FROM vendors v
+CROSS JOIN fishcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Smoked Salmon', 'kg', 0.25, 32.99 FROM vendors v
+CROSS JOIN fishcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Canned Sockeye Salmon', 'kg', 0.20, 12.49 FROM vendors v
+CROSS JOIN fishcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Pollock Fish Sticks', 'kg', 0.40, 8.49 FROM vendors v
+CROSS JOIN fishcat c;
+
+-- _______BAKE_SUPPLIES_VENDOR_______________________________________________BAKE_SUPPLIES_VENDOR_________________________________________________BAKE_SUPPLIES_VENDOR________________________________________________________
+
+WITH vendors AS (
+    INSERT INTO vendor (name, dominant_product, contact_email)
+    VALUES ('Bakers of Waterloo', 'Baking', 'ComeNBake@icloud.com')
+    RETURNING vendor_id
+),
+bakedcat AS (
+    SELECT category_id 
+    FROM category 
+    WHERE category_name = 'Baking'
+)
 INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (2, 2, 'Honeycrisp Apples', 'kg', 0.22, 4.99);
-
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (2, 2, 'Fuji Apples', 'kg', 0.21, 3.99);
-
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (6, 2, 'Red Delicious Apples', 'kg', 0.19, 2.99);
-
--- Other fruits
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (1, 2, 'Bananas', 'kg', 0.15, 1.29);
-
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (1, 2, 'Oranges', 'kg', 0.25, 2.49);
-
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (1, 2, 'Strawberries', 'kg', 0.02, 6.99);
-
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (1, 2, 'Blueberries', 'kg', 0.0015, 8.99);
-
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (1, 2, 'Grapes', 'kg', 0.005, 5.49);
-
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (1, 2, 'Pineapple', 'kg', 1.20, 3.99);
-
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (1, 2, 'Mango', 'kg', 0.30, 4.49);
-
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (1, 2, 'Avocado', 'kg', 0.20, 7.99);
-
--- _______MEAT________________________________________________MEAT_________________________________________________MEAT________________________________________________
---     Beef (category_id = 7)
-
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (4, 7, 'Ground Beef', 'kg', 0.50, 8.99);
-
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (4, 7, 'Ribeye Steak', 'kg', 0.30, 24.99);
-
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (4, 7, 'Sirloin Steak', 'kg', 0.28, 19.99);
--- Venison (category_id = 8)
-
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (4, 8, 'Venison Steak', 'kg', 0.30, 29.99);
-
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (4, 8, 'Ground Venison', 'kg', 0.50, 22.99);
-
--- Pork (category_id = 9)
-
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (4, 9, 'Pork Chops', 'kg', 0.25, 9.49);
-
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (4, 9, 'Bacon', 'kg', 0.20, 12.99);
-
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (4, 9, 'Pork Shoulder', 'kg', 1.50, 7.99);
-
-
--- Chicken (category_id = 10)
-
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (4, 10, 'Whole Chicken', 'kg', 1.60, 5.49);
-
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (4, 10, 'Chicken Breast', 'kg', 0.25, 11.99);
-
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (4, 10, 'Chicken Thighs', 'kg', 0.20, 8.99);
-
-
--- Deli (category_id = 11)
-
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (4, 11, 'Turkey Slices', 'kg', 0.01, 18.99);
-
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (4, 11, 'Ham Slices', 'kg', 0.01, 16.99);
-
-
-
--- _______VEGETABLES________________________________________________VEGETABLES_________________________________________________VEGETABLES_______________________________
-
--- Root vegetables
-
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (2, 3, 'Carrots', 'kg', 0.10, 1.99);
-
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (2, 3, 'Potatoes', 'kg', 0.20, 1.49);
-
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (2, 3, 'Sweet Potatoes', 'kg', 0.25, 2.49);
-
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (2, 3, 'Onions', 'kg', 0.15, 1.79);
-
-
--- Leafy greens
-
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (2, 3, 'Lettuce', 'kg', 0.30, 2.99);
-
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (2, 3, 'Spinach', 'kg', 0.05, 4.99);
-
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (2, 3, 'Kale', 'kg', 0.08, 3.99);
-
-
--- Other common vegetables
-
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (2, 3, 'Broccoli', 'kg', 0.40, 2.99);
-
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (2, 3, 'Cauliflower', 'kg', 0.80, 3.49);
-
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (2, 3, 'Bell Peppers', 'kg', 0.15, 4.49);
-
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (2, 3, 'Zucchini', 'kg', 0.20, 2.79);
-
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (2, 3, 'Cucumber', 'kg', 0.30, 1.99);
-
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (2, 3, 'Tomatoes', 'kg', 0.12, 3.99);
-
-INSERT INTO product (vendor_id, category_id, product_name, unit_of_measure, avg_weight_per, price_per_unit_of_weight)
-VALUES (2, 3, 'Mushrooms', 'kg', 0.02, 6.99);
-
+SELECT v.vendor_id, c.category_id, 'All-Purpose Flour (Stone-Milled)', 'kg', 1.00, 3.49 FROM vendors v
+CROSS JOIN bakedcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Whole Wheat Flour', 'kg', 1.00, 3.79 FROM vendors v
+CROSS JOIN bakedcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Rye Flour', 'kg', 1.00, 4.29 FROM vendors v
+CROSS JOIN bakedcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Spelt Flour', 'kg', 1.00, 4.99 FROM vendors v
+CROSS JOIN bakedcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Cornmeal', 'kg', 1.00, 3.29 FROM vendors v
+CROSS JOIN bakedcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Rolled Oats', 'kg', 1.00, 2.99 FROM vendors v
+CROSS JOIN bakedcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Maple Syrup (Ontario)', 'L', 0.50, 12.99 FROM vendors v
+CROSS JOIN bakedcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Honey (Local Wildflower)', 'kg', 0.50, 9.99 FROM vendors v
+CROSS JOIN bakedcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Beeswax Honeycomb', 'kg', 0.30, 14.99 FROM vendors v
+CROSS JOIN bakedcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id, 'Black Walnuts', 'kg', 0.40, 12.99 FROM vendors v
+CROSS JOIN bakedcat c
+UNION ALL
+SELECT v.vendor_id, c.category_id,  'Hazelnuts (Ontario)', 'kg', 0.40, 11.99 FROM vendors v
+CROSS JOIN bakedcat c;
 
 -- SEED INVENTORY TABLE
 
