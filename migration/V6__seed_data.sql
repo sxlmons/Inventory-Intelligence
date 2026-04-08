@@ -254,9 +254,6 @@ CROSS JOIN delicat c;
 
 -- _______DAIRY_VENDOR_______________________________________________DAIRY_VENDOR_________________________________________________DAIRY_VENDOR________________________________________________________
 
-INSERT INTO vendor (name, dominant_product, contact_email)
-VALUES ('DairyBest Ltd', 'Dairy', 'hello@dairybest.com');
-
 WITH vendors AS (
     INSERT INTO vendor (name, dominant_product, contact_email)
     VALUES ('DairyBest Ltd', 'Dairy', 'hello@dairybest.com')
@@ -530,8 +527,32 @@ CROSS JOIN bakedcat c;
 
 -- SEED INVENTORY TABLE
 
+INSERT INTO inventory (product_id, total_stored_quantity, price_per_unit, last_stock_date)
+SELECT 
+    product_id,
+    1 AS total_stored_quantity,
+    price_per_unit_of_weight AS price_per_unit,
+    CURRENT_TIMESTAMP AS last_stock_date
+FROM product;
 
 -- SEED VENDOR INVENTORY LOT TABLE
+
+INSERT INTO vendorinventorylot (
+    vendor_id,
+    product_id,
+    quantity_on_hand,
+    unit_of_measurement,
+    total_weight,
+    last_restocked_date
+)
+SELECT 
+    vendor_id,
+    product_id,
+    1,
+    unit_of_measure,
+    avg_weight_per * 1,
+    CURRENT_TIMESTAMP
+FROM product;
 
 
 
