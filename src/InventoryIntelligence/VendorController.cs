@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json.Serialization;
+using InventoryIntelligence.DTOs;
 
 namespace InventoryIntelligence;
 
@@ -8,32 +9,58 @@ namespace InventoryIntelligence;
 public class vender_inventoryController : ControllerBase
 {
     [HttpGet]
-    public IActionResult vendor_records()
+    public IActionResult vendor_records(int vendor_id)
     {
-        return Ok("Test GET for vendor records");
+        var products = new List<Product>();
+        
+        // Get all records by vendor id 
+        
+        // EXAMPLE 
+        products.Add(new Product
+            {
+                name = "Apple",
+                quantity = 10,
+                price = 10.0,
+                category = new Category
+                {
+                    name = "Produce",
+                }
+            }
+        );
+        
+        return Ok(products);
     }
 
     [HttpPost]
-    public IActionResult register_vendor()
+    public IActionResult register_vendor(Vendor vendor)
     {
-        return Ok("Test POST for vendor register");
+        // add vendor to database 
+        
+        return Ok($"Vendor {vendor.name} registered");
     }
 
     [HttpPost]
-    public IActionResult add_item()
+    public IActionResult add_item(int vendor_id, List<Product> products)
     {
-        return Ok("Test POST for add item");
+        // add the products to the vendor
+        
+        return Ok();
     }
 
     [HttpPatch]
-    public IActionResult update_item()
+    public IActionResult update_item(int vendor_id, List<Product> products)
     {
-        return Ok("Test PATCH for update item");
+        // update
+        
+        return Ok();
     }
 
     [HttpDelete]
-    public IActionResult remove_item()
+    public IActionResult remove_item(int vendor_id, List<Product> products)
     {
-        return Ok("Test DELETE for delete item");
+        // remove 
+        
+        return Ok();
     }
 }
+

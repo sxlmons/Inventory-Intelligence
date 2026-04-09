@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json.Serialization;
+using InventoryIntelligence.DTOs;
 
 namespace InventoryIntelligence;
 
@@ -10,19 +11,70 @@ public class inventoryController : ControllerBase
     [HttpGet]
     public IActionResult all_items()
     {
-        return Ok("Get everything in database");
+        var products = new List<Product>();
+        
+        // EXAMPLE 
+        products.Add(new Product
+            {
+                name = "Apple",
+                quantity = 10,
+                price = 10.0,
+                category = new Category
+                {
+                    name = "Produce",
+                }
+            }
+        );
+        
+        return Ok(products);
     }
 
     // Not included but could imagine it being good for order team
     [HttpGet]
-    public IActionResult get_items_by_type()
+    public IActionResult get_items_by_category(int category_id)
     {
-        return Ok("Get everything in database ");
+        var products = new List<Product>();
+        
+        products.Add(new Product
+            {
+                name = "Apple",
+                quantity = 10,
+                price = 10.0,
+                category = new Category
+                {
+                    name = "Produce",
+                }
+            }
+        );
+        
+        // SELECT product WHERE category is the id
+        
+        return Ok(products);
     }
 
     [HttpPost]
-    public IActionResult sold_items()
+    public IActionResult sold_items(List<Product> products)
     {
-        return Ok("Receive confirmed sold items");
+        // remove products my id
+        // or however you do it 
+        
+        return Ok();
+    }
+
+    [HttpGet]
+    public IActionResult get_item_categories()
+    {
+        var categories = new List<Category>();
+        
+        // EXAMPLE DATA
+        categories.Add(new Category
+        {
+            name = "Produce",
+        });
+        // DELETE 
+        
+        // categories = funcitonForGettingCategories(); EXAMPLE 
+        
+        return Ok(categories);
     }
 }
