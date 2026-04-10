@@ -12,22 +12,23 @@ public class vender_inventoryController : ControllerBase
     public IActionResult vendor_records(int vendor_id)
     {
         var products = new List<Product>();
-        
+
         // Get all records by vendor id 
-        
+
         // EXAMPLE 
         products.Add(new Product
+        {
+            id = 1,
+            name = "Apple",
+            quantity = 10,
+            price = 10.0,
+            category = new Category
             {
-                name = "Apple",
-                quantity = 10,
-                price = 10.0,
-                category = new Category
-                {
-                    name = "Produce",
-                }
+                name = "Produce",
             }
+        }
         );
-        
+
         return Ok(products);
     }
 
@@ -35,7 +36,7 @@ public class vender_inventoryController : ControllerBase
     public IActionResult register_vendor(Vendor vendor)
     {
         // add vendor to database 
-        
+
         return Ok($"Vendor {vendor.name} registered");
     }
 
@@ -43,7 +44,7 @@ public class vender_inventoryController : ControllerBase
     public IActionResult add_item(int vendor_id, List<Product> products)
     {
         // add the products to the vendor
-        
+
         return Ok();
     }
 
@@ -51,7 +52,7 @@ public class vender_inventoryController : ControllerBase
     public IActionResult update_item(int vendor_id, List<Product> products)
     {
         // update
-        
+
         return Ok();
     }
 
@@ -59,7 +60,7 @@ public class vender_inventoryController : ControllerBase
     public IActionResult remove_item(int vendor_id, List<Product> products)
     {
         // remove 
-        
+
         return Ok();
     }
 }
