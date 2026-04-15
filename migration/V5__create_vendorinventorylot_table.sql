@@ -7,7 +7,6 @@ CREATE TABLE vendorinventorylot (
     product_id INT,
     quantity_on_hand INT NOT NULL DEFAULT 0,
     unit_of_measurement VARCHAR(3) NOT NULL DEFAULT 'kg',
-    total_weight DOUBLE PRECISION NOT NULL DEFAULT 0.00,
     last_restocked_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
