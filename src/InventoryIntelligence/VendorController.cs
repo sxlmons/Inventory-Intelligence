@@ -13,7 +13,7 @@ public class vender_inventoryController : ControllerBase
     {
         var products = new List<Product>();
         
-        // Get all records by vendor id 
+        // Get all records by vendor name
         
         // EXAMPLE 
         products.Add(new Product
@@ -23,7 +23,7 @@ public class vender_inventoryController : ControllerBase
                 price = 10.0,
                 category = new Category
                 {
-                    name = "Produce",
+                    category_name = "Produce",
                 }
             }
         );

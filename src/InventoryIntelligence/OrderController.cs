@@ -21,7 +21,7 @@ public class inventoryController : ControllerBase
                 price = 10.0,
                 category = new Category
                 {
-                    name = "Produce",
+                    category_name = "Produce",
                 }
             }
         );
@@ -42,7 +42,7 @@ public class inventoryController : ControllerBase
                 price = 10.0,
                 category = new Category
                 {
-                    name = "Produce",
+                    category_name = "Produce",
                 }
             }
         );
@@ -69,7 +69,7 @@ public class inventoryController : ControllerBase
         // EXAMPLE DATA
         categories.Add(new Category
         {
-            name = "Produce",
+            category_name = "Produce",
         });
         // DELETE 
         
