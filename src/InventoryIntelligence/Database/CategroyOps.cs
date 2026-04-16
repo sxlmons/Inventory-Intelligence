@@ -51,6 +51,30 @@ public class CategoryOps
         }
         return result;
     }
+
+    public async Task<int?> GetCategoryIDByName(string categoryName)
+    {
+        await using var conn = new NpgsqlConnection(_connectionString);
+        await conn.OpenAsync();
+
+        var query = new NpgsqlCommand("""
+            SELECT category_id
+            FROM category
+            WHERE category_name = @name
+            LIMIT 1;
+            """, conn);
+
+        query.Parameters.AddWithValue("name", categoryName);
+
+        var result = await query.ExecuteScalarAsync();
+
+        if (result == null || result == DBNull.Value)
+        {
+            return null;
+        }
+
+        return (int)result;
+    }
 }
 //     public async Task Insert(Product product)
 //     {

@@ -18,9 +18,9 @@ public class vender_inventoryController : ControllerBase
         // EXAMPLE 
         products.Add(new Product
             {
-                name = "Apple",
-                quantity = 10,
-                price = 10.0,
+                product_name = "Apple",
+                unit_of_measure = "kg",
+                price_per_unit = 10.0,
                 category = new Category
                 {
                     category_name = "Produce",

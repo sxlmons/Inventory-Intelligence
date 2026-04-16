@@ -1,38 +1,28 @@
 -- SEED CATEGORY TABLE
 
 -- Common
-WITH parent AS (
+WITH meat AS (
     INSERT INTO Category (category_name)
-    VALUES ('Most Common')
-    RETURNING category_id
-),
-meat AS (
-    INSERT INTO Category (parent_category_id, category_name, level_of_category)
-    SELECT category_id, 'Meat', 2 FROM parent
+    VALUES ('Meat')
     RETURNING category_id
 )
 INSERT INTO Category (parent_category_id, category_name, level_of_category)
-SELECT category_id, 'Fruit', 2 FROM parent
-UNION ALL
-SELECT category_id, 'Vegetables', 2 FROM parent
-UNION ALL
-SELECT category_id, 'Canned Goods', 2 FROM parent
-UNION ALL
-SELECT category_id, 'Dairy', 2 FROM parent
-UNION ALL
 
 -- Meats
-SELECT category_id, 'Beef', 3 FROM meat
+SELECT category_id, 'Beef', 2 FROM meat
 UNION ALL
-SELECT category_id, 'Vension', 3 FROM meat
+SELECT category_id, 'Vension', 2 FROM meat
 UNION ALL
-SELECT category_id, 'Pork', 3 FROM meat
+SELECT category_id, 'Pork', 2 FROM meat
 UNION ALL
-SELECT category_id, 'Chicken', 3 FROM meat
+SELECT category_id, 'Chicken', 2 FROM meat
 UNION ALL
-SELECT category_id, 'Deli', 3 FROM meat;
+SELECT category_id, 'Deli', 2 FROM meat;
 
-
+INSERT INTO Category (category_name) VALUES ('Fruit');
+INSERT INTO Category (category_name) VALUES ('Vegetables');
+INSERT INTO Category (category_name) VALUES ('Canned Goods');
+INSERT INTO Category (category_name) VALUES ('Dairy');
 -- Fish/Seafood
 INSERT INTO Category (category_name)VALUES('Fish');
 INSERT INTO Category (category_name)VALUES('Seafood');

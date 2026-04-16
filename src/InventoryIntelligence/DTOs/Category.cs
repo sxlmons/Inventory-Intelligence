@@ -12,6 +12,5 @@ public class Category
 
     public DateTime created_at { get; set; }
 
-    // from your JOIN (not stored in table)
     public string? parent_category_name { get; set; }
 }

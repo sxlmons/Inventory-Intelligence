@@ -1,84 +1,211 @@
-// using Npgsql;
+using InventoryIntelligence.DTOs;
+using Npgsql;
+using System.Globalization;
+namespace InventoryIntelligence.Database;
 
-// public class ProductOps
-// {
-//     private readonly string _connectionString;
+// var builder = WebApplication.CreateBuilder(args);
+// builder.Services.AddScoped<CategoryOps>();
 
-//     public ProductOps(IConfiguration config)
-//     {
-//         _connectionString = config.GetConnectionString("DefaultConnection");
-//     }
+public class ProductOps
+{
+    private readonly string _connectionString;
+    private readonly CategoryOps _categoryOps;
 
-//     public async Task<List<Product>> GetProductsForVendor()
-//     {
-//         var result = new List<Product>();
+    public ProductOps(IConfiguration config, CategoryOps categoryOps)
+    {
+        _connectionString = config.GetConnectionString("DefaultConnection");
+        _categoryOps = categoryOps;
+    }
 
-//         await using var conn = new NpgsqlConnection(_connectionString);
-//         await conn.OpenAsync();
+    private string NormalizeName(string name)
+    {
+        var textInfo = CultureInfo.InvariantCulture.TextInfo;
 
-//         var query = new NpgsqlCommand("SELECT id, name, quantity, price FROM product", conn);
+        name = name.Trim().ToLowerInvariant();
+        name = textInfo.ToTitleCase(name);
 
-//         await using var reader = await query.ExecuteReaderAsync();
+        return name;
+    }
 
-//         while (await reader.ReadAsync())
-//         {
-//             result.Add(new Product
-//             {
-//                 id = reader.GetInt32(0),
-//                 name = reader.GetString(1),
-//                 quantity = reader.GetInt32(2),
-//                 price = reader.GetDouble(3)
-//             });
-//         }
+    public async Task<List<Product>> GetProducts()
+    {
+        var result = new List<Product>();
 
-//         return result;
-//     }
+        await using var conn = new NpgsqlConnection(_connectionString);
+        await conn.OpenAsync();
+        
+        
+        var query = new NpgsqlCommand("""
+            SELECT 
+                p.product_id,
+                p.category_id,
+                p.product_name,
+                p.unit_of_measure,
+                p.price_per_unit,
+                p.updated_at,
+                c.category_name
+            FROM product p
+            LEFT JOIN category c 
+                ON p.category_id = c.category_id;
+        """, conn);
 
-//     public async Task Insert(Product product)
-//     {
-//         await using var conn = new NpgsqlConnection(_connectionString);
-//         await conn.OpenAsync();
+        await using var reader = await query.ExecuteReaderAsync();
 
-//         var cmd = new NpgsqlCommand(
-//             "INSERT INTO product (name, quantity, price) VALUES (@n, @q, @p)",
-//             conn
-//         );
+        while (await reader.ReadAsync())
+        {
+            result.Add(new Product
+            {
+                product_id = reader.GetInt32(0),
+                category_id = reader.GetInt32(1),
+                product_name = reader.GetString(2),
+                unit_of_measure = reader.GetString(3),
+                price_per_unit = reader.GetDouble(4),
+                updated_at = reader.GetDateTime(5),
+                category_name = reader.IsDBNull(6) ? null : reader.GetString(6)
+            });
+        }
 
-//         cmd.Parameters.AddWithValue("n", product.name);
-//         cmd.Parameters.AddWithValue("q", product.quantity);
-//         cmd.Parameters.AddWithValue("p", product.price);
+        return result;
+    }
 
-//         await cmd.ExecuteNonQueryAsync();
-//     }
+    public async Task<string> GetProductIDByName(string productName)
+    {
+        await using var conn = new NpgsqlConnection(_connectionString);
+        await conn.OpenAsync();
 
-//     public async Task UpdateQuantity(int id, int delta)
-//     {
-//         await using var conn = new NpgsqlConnection(_connectionString);
-//         await conn.OpenAsync();
+        var query = new NpgsqlCommand("""
+            SELECT product_id
+            FROM product
+            WHERE product_name = @name
+            LIMIT 1;
+            """, conn);
 
-//         var cmd = new NpgsqlCommand(
-//             "UPDATE product SET quantity = quantity + @delta WHERE id = @id",
-//             conn
-//         );
+        query.Parameters.AddWithValue("name", productName);
 
-//         cmd.Parameters.AddWithValue("delta", delta);
-//         cmd.Parameters.AddWithValue("id", id);
+        var result = await query.ExecuteScalarAsync();
 
-//         await cmd.ExecuteNonQueryAsync();
-//     }
+        if (result == null || result == DBNull.Value)
+        {
+            return "not found";
+        }
 
-//     public async Task Delete(int id)
-//     {
-//         await using var conn = new NpgsqlConnection(_connectionString);
-//         await conn.OpenAsync();
+        return result.ToString();
+    }
 
-//         var cmd = new NpgsqlCommand(
-//             "DELETE FROM product WHERE id = @id",
-//             conn
-//         );
+    public async Task<int?> GetProductIdIfExists(string productName, string unitOfMeasure)
+    {
+        await using var conn = new NpgsqlConnection(_connectionString);
+        await conn.OpenAsync();
+        
+        var normalizedName = NormalizeName(productName);
 
-//         cmd.Parameters.AddWithValue("id", id);
+        var query = new NpgsqlCommand("""
+            SELECT product_id
+            FROM product
+            WHERE product_name = @name
+            LIMIT 1;
+            """, conn);
 
-//         await cmd.ExecuteNonQueryAsync();
-//     }
-// }
+        query.Parameters.AddWithValue("name", normalizedName);
+
+        var result = await query.ExecuteScalarAsync();
+
+        if (result == null || result == DBNull.Value)
+        {
+            return null; 
+        }
+        
+        if (result != null || result != DBNull.Value)
+        {
+            if (unitOfMeasure == "kg" || unitOfMeasure == "ml" || unitOfMeasure == "lbs" || unitOfMeasure == "l")
+            {
+                var duplicatequery = new NpgsqlCommand("""
+                    SELECT unit_of_measure
+                    FROM product
+                    WHERE product_name = @name
+                """, conn);
+
+                duplicatequery.Parameters.AddWithValue("name", normalizedName);
+
+                await using var reader = await duplicatequery.ExecuteReaderAsync();
+
+                while (await reader.ReadAsync())
+                {
+                    var dbUnit = reader.GetString(0);
+
+                    if (dbUnit == "bundle" || dbUnit == "punnet" || dbUnit == "bag")
+                    {
+                      //  Console.WriteLine("match 2");
+                        return null;
+                    }
+                }
+            }
+            if (unitOfMeasure == "bundle" || unitOfMeasure == "punnet" || unitOfMeasure == "bag")
+            {
+                var duplicatequerys = new NpgsqlCommand("""
+                    SELECT unit_of_measure
+                    FROM product
+                    WHERE product_name = @name
+                """, conn);
+
+                duplicatequerys.Parameters.AddWithValue("name", normalizedName);
+
+                await using var reader1 = await duplicatequerys.ExecuteReaderAsync();
+
+                while (await reader1.ReadAsync())
+                {
+                    var dbUnit = reader1.GetString(0);
+
+                    if (dbUnit == "kg" || dbUnit == "ml" || dbUnit == "lbs"|| dbUnit == "l")
+                    {
+                       // Console.WriteLine("match 2");
+                        return null;
+                    }
+                }
+            }
+        }
+        return (int)result;
+    }
+
+
+    public async Task<bool> AddProductRecord(string productName, string categoryName, string unitOfMeasure, double pricePerUnit)
+    {
+        await using var conn = new NpgsqlConnection(_connectionString);
+        await conn.OpenAsync();
+        
+        var categoryID = await _categoryOps.GetCategoryIDByName(categoryName);
+        var normalizedName = NormalizeName(productName);
+
+        if (categoryID == null)
+        {
+          return false;  // Instead of this, maybe consider sending error message/adding the category manually? idk. I feel like every product should only have a category that exists already
+        }
+
+        var existingProductId = await GetProductIdIfExists(normalizedName, unitOfMeasure);
+    
+        if (existingProductId != null)
+        {
+            return false;
+        }
+        
+        var query = new NpgsqlCommand("""
+            INSERT INTO product(product_name, category_id, unit_of_measure, price_per_unit)
+            VALUES(
+            @name, 
+            @catID, 
+            @unit, 
+            @price
+            );
+            """, conn);
+
+        query.Parameters.AddWithValue("name", normalizedName);
+        query.Parameters.AddWithValue("catID", categoryID.Value);
+        query.Parameters.AddWithValue("unit", unitOfMeasure);
+        query.Parameters.AddWithValue("price", pricePerUnit);
+
+        var rows = await query.ExecuteNonQueryAsync();
+
+        return rows > 0;
+    }
+    
+}
