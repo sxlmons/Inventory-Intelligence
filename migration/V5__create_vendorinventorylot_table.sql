@@ -1,13 +1,13 @@
 -- V5__create_vendorinventorylot_table.sql
 
--- Create table
 CREATE TABLE vendorinventorylot (
-    lot_id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    vendor_id INT NOT NULL,
+    vendor_id INT,
     product_id INT,
     quantity_on_hand INT NOT NULL DEFAULT 0,
-    unit_of_measurement VARCHAR(3) NOT NULL DEFAULT 'kg',
-    last_restocked_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    unit_of_measurement VARCHAR(10) NOT NULL DEFAULT 'kg',
+    last_restocked_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    PRIMARY KEY (vendor_id, product_id)
 );
 
 -- Foreign key: product
@@ -20,9 +20,6 @@ ALTER TABLE vendorinventorylot
 ADD CONSTRAINT vendorinventorylot_vendor_id_fkey
 FOREIGN KEY (vendor_id) REFERENCES vendor(vendor_id);
 
--- Indexes
-CREATE INDEX idx_vil_vendor
-ON vendorinventorylot(vendor_id);
-
+-- index (mostly redundant since PK is indexed)
 CREATE INDEX idx_vil_product
 ON vendorinventorylot(product_id);

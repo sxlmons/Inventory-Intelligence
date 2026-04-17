@@ -17,7 +17,7 @@ FOREIGN KEY (parent_category_id) REFERENCES category(category_id);
 -- Check constraint to prevent self-parenting
 ALTER TABLE category
 ADD CONSTRAINT chk_no_self_parent
-CHECK (category_id IS NULL OR category_id != parent_category_id);
+CHECK (parent_category_id IS NULL OR parent_category_id != category_id);
 
 -- Index on parent_category_id
 CREATE INDEX idx_category_parent

@@ -68,7 +68,7 @@ public class ProductOps
         return result;
     }
 
-    public async Task<string> GetProductIDByName(string productName)
+    public async Task<int?> GetProductIDByName(string productName)
     {
         await using var conn = new NpgsqlConnection(_connectionString);
         await conn.OpenAsync();
@@ -86,10 +86,10 @@ public class ProductOps
 
         if (result == null || result == DBNull.Value)
         {
-            return "not found";
+            return null;
         }
 
-        return result.ToString();
+        return (int)result;
     }
 
     public async Task<int?> GetProductIdIfExists(string productName, string unitOfMeasure)
@@ -168,7 +168,7 @@ public class ProductOps
     }
 
 
-    public async Task<bool> AddProductRecord(string productName, string categoryName, string unitOfMeasure, double pricePerUnit)
+    public async Task<int?> AddProductRecord(string productName, string categoryName, string unitOfMeasure, double pricePerUnit)
     {
         await using var conn = new NpgsqlConnection(_connectionString);
         await conn.OpenAsync();
@@ -178,14 +178,14 @@ public class ProductOps
 
         if (categoryID == null)
         {
-          return false;  // Instead of this, maybe consider sending error message/adding the category manually? idk. I feel like every product should only have a category that exists already
+          return null;  // Instead of this, maybe consider sending error message/adding the category manually? idk. I feel like every product should only have a category that exists already
         }
 
         var existingProductId = await GetProductIdIfExists(normalizedName, unitOfMeasure);
     
         if (existingProductId != null)
         {
-            return false;
+            return null;
         }
         
         var query = new NpgsqlCommand("""
@@ -195,7 +195,8 @@ public class ProductOps
             @catID, 
             @unit, 
             @price
-            );
+            )
+            RETURNING product_id;
             """, conn);
 
         query.Parameters.AddWithValue("name", normalizedName);
@@ -203,9 +204,15 @@ public class ProductOps
         query.Parameters.AddWithValue("unit", unitOfMeasure);
         query.Parameters.AddWithValue("price", pricePerUnit);
 
-        var rows = await query.ExecuteNonQueryAsync();
+        var result = await query.ExecuteScalarAsync();
+        
+        if (result == null)
+        {
+            return null;
+        }
 
-        return rows > 0;
+        return (int)result;
+        //return result == null ? null : (int?)Convert.ToInt32(result);
     }
     
 }
