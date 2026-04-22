@@ -99,23 +99,33 @@ public class VendorInventoryOps
         return rowsAffected > 0;
     }
 
-    public async Task<bool> DecreaseQuantityOfVendorProductByAmount(int productID, int vendorID, int quantityToIncreaseBy)
+
+    public async Task<bool> DecreaseQuantityOfVendorProductByAmount(string productName, string vendorName, int quantityToDecreaseBy)
     {
         await using var conn = new NpgsqlConnection(_connectionString);
         await conn.OpenAsync();
-        
-        var query = new NpgsqlCommand("""
-            UPDATE vendorinventorylot
-            SET quantity_on_hand = quantity_on_hand - @quantity
-            WHERE vendor_id = @vendorID AND product_id = @productID;
-            """, conn);
+        var vendorID = await _vendorOps.GetVendorIDByName(vendorName);
+        if (vendorID == null)
+        {
+            return false;
+        }
+        var productID = await _productOps.GetProductIDByName(productName);
+        if (productID != null){
 
-        query.Parameters.AddWithValue("quantity", quantityToIncreaseBy);
-        query.Parameters.AddWithValue("productID", productID);
-        query.Parameters.AddWithValue("vendorID", vendorID);
+            var query = new NpgsqlCommand("""
+                UPDATE vendorinventorylot
+                SET quantity_on_hand = quantity_on_hand - @quantity
+                WHERE vendor_id = @vendorID AND product_id = @productID;
+                """, conn);
 
-        var rowsAffected = await query.ExecuteNonQueryAsync();
-        return rowsAffected > 0;
+            query.Parameters.AddWithValue("quantity", quantityToDecreaseBy);
+            query.Parameters.AddWithValue("productID", productID);
+            query.Parameters.AddWithValue("vendorID", vendorID);
+
+            var rowsAffected = await query.ExecuteNonQueryAsync();
+            return rowsAffected > 0;
+        }
+        return false;
     }
 
     public async Task<bool> AddProductToVendorsLot(string vendorName, string productName, string categoryName, int quantity, string unitOfMeasure, double pricePerUnit)
@@ -220,6 +230,26 @@ public class VendorInventoryOps
         query.Parameters.AddWithValue("price", pricePerUnit);
 
         var rows = await query.ExecuteNonQueryAsync();
+        return rows > 0;
+    }
+
+    public async Task<bool> UpdateInventoryDecrease(int productID, int quantity)
+    {
+        await using var conn = new NpgsqlConnection(_connectionString);
+        await conn.OpenAsync();
+
+       var cmd = new NpgsqlCommand("""
+            UPDATE inventory
+            SET total_stored_quantity = total_stored_quantity - @quantity
+            WHERE product_id = @productID
+            AND total_stored_quantity >= @quantity;
+        """, conn);
+
+        cmd.Parameters.AddWithValue("@quantity", quantity);
+        cmd.Parameters.AddWithValue("@productID", productID);
+
+        var rows = await cmd.ExecuteNonQueryAsync();
+
         return rows > 0;
     }
 }
