@@ -1,21 +1,40 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json.Serialization;
 using InventoryIntelligence.DTOs;
+using InventoryIntelligence.Database;
 
 namespace InventoryIntelligence;
 
 [ApiController]
 [Route("api/inventory_intelligence/[controller]/[action]")]
-public class vender_inventoryController : ControllerBase
+public class inventoryController : ControllerBase
 {
+    private readonly CategoryOps _categoryOps;
+    private readonly InventoryOps _inventoryOps;
+    private readonly VendorInventoryOps _vendorInvOps;
+
+    public inventoryController(CategoryOps CatOps, InventoryOps InvOps, VendorInventoryOps VenInvOps)
+    {
+        _categoryOps = CatOps;
+        _inventoryOps = InvOps;
+        _vendorInvOps = VenInvOps;
+    }
+
     [HttpGet]
-    public IActionResult vendor_records(int vendor_id)
+    //public IActionResult all_items()
+    public async Task<IActionResult> all_items()
+    {
+        var products = await _inventoryOps.GetFullInventory();
+
+        return Ok(products);
+    }
+
+    /*
+    [HttpGet]
+    public IActionResult get_items_by_category(int category_id)
     {
         var products = new List<Product>();
 
-        // Get all records by vendor id 
-
-        // EXAMPLE 
         products.Add(new Product
         {
             id = 1,
@@ -24,44 +43,37 @@ public class vender_inventoryController : ControllerBase
             price = 10.0,
             category = new Category
             {
-                name = "Produce",
+                product_name = "Apple",
+                unit_of_measure = "kg",
+                price_per_unit = 10.0,
+                category = new Category
+                {
+                    category_name = "Produce",
+                }
             }
         }
         );
 
+        // SELECT product WHERE category is the id
+
         return Ok(products);
     }
+    */
 
     [HttpPost]
-    public IActionResult register_vendor(Vendor vendor)
+    public async Task<IActionResult> sold_items(string vendor_name, List<Product> products)
     {
-        // add vendor to database 
-
-        return Ok($"Vendor {vendor.name} registered");
-    }
-
-    [HttpPost]
-    public IActionResult add_item(int vendor_id, List<Product> products)
-    {
-        // add the products to the vendor
+        foreach (var product in products)
+            await _vendorInvOps.DecreaseQuantityOfVendorProductByAmount(product.product_name, vendor_name, 1);
 
         return Ok();
     }
 
-    [HttpPatch]
-    public IActionResult update_item(int vendor_id, List<Product> products)
+    [HttpGet]
+    public async Task<IActionResult> get_item_categories()
     {
-        // update
+        List<Category> categories = await _categoryOps.GetCategories();
 
-        return Ok();
-    }
-
-    [HttpDelete]
-    public IActionResult remove_item(int vendor_id, List<Product> products)
-    {
-        // remove 
-
-        return Ok();
+        return Ok(categories);
     }
 }
-
