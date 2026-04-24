@@ -37,6 +37,41 @@ public class VendorOps
         return (int)result;
     }
 
+    public async Task<List<Vendor>> GetVendors()
+    {
+        var result = new List<Vendor>();
+        await using var conn = new NpgsqlConnection(_connectionString);
+        await conn.OpenAsync();
+
+        var query = new NpgsqlCommand("""
+            SELECT
+            vendor_id, 
+            name,
+            dominant_product,
+            contact_email,
+            created_at
+            FROM vendor;
+            """, conn);
+
+        await using var reader = await query.ExecuteReaderAsync();
+
+        while (await reader.ReadAsync())
+        {
+            result.Add(new Vendor
+            {
+                vendor_id = reader.GetInt32(0),
+                name = reader.GetString(1),
+                dominant_product = reader.GetString(2),
+                contact_email = reader.GetString(3),
+                created_at = reader.GetDateTime(4)
+            });
+        }
+
+       
+
+        return result;
+    }
+
     public async Task<bool> UpdateVendorName(string vendorName, int vendorID)
     {
         await using var conn = new NpgsqlConnection(_connectionString);
@@ -110,6 +145,7 @@ public class VendorOps
         query.Parameters.AddWithValue("email", contactEmail);
 
         var rows = await query.ExecuteNonQueryAsync();
+        
 
         return rows > 0;
     }

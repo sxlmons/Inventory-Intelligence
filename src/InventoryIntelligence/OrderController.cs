@@ -21,6 +21,7 @@ public class inventoryController : ControllerBase
     }
     
     [HttpGet]
+    public IActionResult all_items()
     public async Task<IActionResult> all_items()
     {
         var products = await _inventoryOps.GetFullInventory();
@@ -33,8 +34,14 @@ public class inventoryController : ControllerBase
     public IActionResult get_items_by_category(int category_id)
     {
         var products = new List<Product>();
-        
+
         products.Add(new Product
+        {
+            id = 1,
+            name = "Apple",
+            quantity = 10,
+            price = 10.0,
+            category = new Category
             {
                 product_name = "Apple",
                 unit_of_measure = "kg",
@@ -44,10 +51,11 @@ public class inventoryController : ControllerBase
                     category_name = "Produce",
                 }
             }
+        }
         );
-        
+
         // SELECT product WHERE category is the id
-        
+
         return Ok(products);
     }
     */

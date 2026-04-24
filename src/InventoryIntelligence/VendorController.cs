@@ -20,6 +20,7 @@ public class vender_inventoryController : ControllerBase
     }
     
     [HttpGet]
+    public IActionResult vendor_records(int vendor_id)
     public async Task<IActionResult> vendor_records(string vendor_name)
     {
         var products = await _vendorInvOps.GetVendorsProducts(vendor_name);
