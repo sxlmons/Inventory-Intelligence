@@ -21,7 +21,7 @@ public class inventoryController : ControllerBase
     }
     
     [HttpGet]
-    public IActionResult all_items()
+    //public IActionResult all_items()
     public async Task<IActionResult> all_items()
     {
         var products = await _inventoryOps.GetFullInventory();
