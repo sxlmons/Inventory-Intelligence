@@ -56,7 +56,7 @@ public class vender_inventoryController : ControllerBase
     public async Task<IActionResult> remove_item(string vendor_name, List<Product> products)
     {
         foreach (var product in products)
-            await _vendorInvOps.DecreaseQuantityOfVendorProductByAmount(product.product_id, vendor_name, 1);
+            await _vendorInvOps.DecreaseQuantityOfVendorProductByAmount(product.product_name, vendor_name, 1);
         
         return Ok();
     }
