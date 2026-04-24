@@ -21,7 +21,6 @@ public class inventoryController : ControllerBase
     }
     
     [HttpGet]
-    public IActionResult all_items()
     public async Task<IActionResult> all_items()
     {
         var products = await _inventoryOps.GetFullInventory();
@@ -61,10 +60,10 @@ public class inventoryController : ControllerBase
     */
 
     [HttpPost]
-    public async Task<IActionResult> sold_items(int vendor_id, List<Product> products)
+    public async Task<IActionResult> sold_items(string vendor_name, List<Product> products)
     {
         foreach (var product in products)
-            await _vendorInvOps.DecreaseQuantityOfVendorProductByAmount(product.product_id, vendor_id, 1);
+            await _vendorInvOps.DecreaseQuantityOfVendorProductByAmount(product.product_name, vendor_name, 1);
         
         return Ok();
     }
