@@ -7,57 +7,73 @@ namespace InventoryIntelligence;
 
 [ApiController]
 [Route("api/inventory_intelligence/[controller]/[action]")]
-public class vender_inventoryController : ControllerBase
+public class inventoryController : ControllerBase
 {
-    
+    private readonly CategoryOps _categoryOps;
+    private readonly InventoryOps _inventoryOps;
     private readonly VendorInventoryOps _vendorInvOps;
-    private readonly VendorOps _venOps;
     
-    public vender_inventoryController(VendorInventoryOps venInvOps, VendorOps venOps)
+    public inventoryController(CategoryOps CatOps, InventoryOps InvOps, VendorInventoryOps VenInvOps)
     {
-        _vendorInvOps = venInvOps;
-        _venOps = venOps;
+        _categoryOps = CatOps;
+        _inventoryOps = InvOps;
+        _vendorInvOps = VenInvOps;
     }
     
     [HttpGet]
-    public async Task<IActionResult> vendor_records(string vendor_name)
+    public IActionResult all_items()
+    public async Task<IActionResult> all_items()
     {
-        var products = await _vendorInvOps.GetVendorsProducts(vendor_name);
+        var products = await _inventoryOps.GetFullInventory();
         
         return Ok(products);
     }
-
-    [HttpPost]
-    public async Task<IActionResult> register_vendor(Vendor vendor)
+    
+    /*
+    [HttpGet]
+    public IActionResult get_items_by_category(int category_id)
     {
-        await _venOps.AddVendor(vendor.name, vendor.dominant_product, vendor.contact_email);
-        
-        return Ok($"Vendor {vendor.name} registered");
-    }
+        var products = new List<Product>();
 
-    [HttpPost]
-    public async Task<IActionResult> add_item(string vendor_name, List<Product> products)
-    {
-        // add the products to the vendor
-        foreach (var product in products)
+        products.Add(new Product
         {
-            await _vendorInvOps.AddProductToVendorsLot(vendor_name,
-                                                    product.product_name,
-                                                    product.category_name ?? "",
-                                                    1, product.unit_of_measure,
-                                                    product.price_per_unit);
+            id = 1,
+            name = "Apple",
+            quantity = 10,
+            price = 10.0,
+            category = new Category
+            {
+                product_name = "Apple",
+                unit_of_measure = "kg",
+                price_per_unit = 10.0,
+                category = new Category
+                {
+                    category_name = "Produce",
+                }
+            }
         }
+        );
+
+        // SELECT product WHERE category is the id
+
+        return Ok(products);
+    }
+    */
+
+    [HttpPost]
+    public async Task<IActionResult> sold_items(int vendor_id, List<Product> products)
+    {
+        foreach (var product in products)
+            await _vendorInvOps.DecreaseQuantityOfVendorProductByAmount(product.product_id, vendor_id, 1);
         
         return Ok();
     }
 
-    [HttpDelete]
-    public async Task<IActionResult> remove_item(string vendor_name, List<Product> products)
+    [HttpGet]
+    public async Task<IActionResult> get_item_categories()
     {
-        foreach (var product in products)
-            await _vendorInvOps.DecreaseQuantityOfVendorProductByAmount(product.product_name, vendor_name, 1);
+        List<Category> categories = await _categoryOps.GetCategories();
         
-        return Ok();
+        return Ok(categories);
     }
 }
-
