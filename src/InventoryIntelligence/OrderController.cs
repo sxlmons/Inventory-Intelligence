@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json.Serialization;
 using InventoryIntelligence.DTOs;
+using InventoryIntelligence.Database;
 
 namespace InventoryIntelligence;
 
@@ -8,28 +9,26 @@ namespace InventoryIntelligence;
 [Route("api/inventory_intelligence/[controller]/[action]")]
 public class inventoryController : ControllerBase
 {
-    [HttpGet]
-    public IActionResult all_items()
+    private readonly CategoryOps _categoryOps;
+    private readonly InventoryOps _inventoryOps;
+    private readonly VendorInventoryOps _vendorInvOps;
+    
+    public inventoryController(CategoryOps CatOps, InventoryOps InvOps, VendorInventoryOps VenInvOps)
     {
-        var products = new List<Product>();
-        
-        // EXAMPLE 
-        products.Add(new Product
-            {
-                product_name = "Apple",
-                unit_of_measure = "kg",
-                price_per_unit = 10.0,
-                category = new Category
-                {
-                    category_name = "Produce",
-                }
-            }
-        );
+        _categoryOps = CatOps;
+        _inventoryOps = InvOps;
+        _vendorInvOps = VenInvOps;
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> all_items()
+    {
+        var products = await _inventoryOps.GetFullInventory();
         
         return Ok(products);
     }
-
-    // Not included but could imagine it being good for order team
+    
+    /*
     [HttpGet]
     public IActionResult get_items_by_category(int category_id)
     {
@@ -51,29 +50,21 @@ public class inventoryController : ControllerBase
         
         return Ok(products);
     }
+    */
 
     [HttpPost]
-    public IActionResult sold_items(List<Product> products)
+    public async Task<IActionResult> sold_items(int vendor_id, List<Product> products)
     {
-        // remove products my id
-        // or however you do it 
+        foreach (var product in products)
+            await _vendorInvOps.DecreaseQuantityOfVendorProductByAmount(product.product_id, vendor_id, 1);
         
         return Ok();
     }
 
     [HttpGet]
-    public IActionResult get_item_categories()
+    public async Task<IActionResult> get_item_categories()
     {
-        var categories = new List<Category>();
-        
-        // EXAMPLE DATA
-        categories.Add(new Category
-        {
-            category_name = "Produce",
-        });
-        // DELETE 
-        
-        // categories = funcitonForGettingCategories(); EXAMPLE 
+        List<Category> categories = await _categoryOps.GetCategories();
         
         return Ok(categories);
     }
