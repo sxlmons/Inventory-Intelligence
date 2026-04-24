@@ -5,12 +5,12 @@ namespace InventoryIntelligence.Database;
 public class InventoryOps
 {
     private readonly string _connectionString;
-   // private readonly ProductOps _productOps;
+    // private readonly ProductOps _productOps;
 
     public InventoryOps(IConfiguration config)
     {
         _connectionString = config.GetConnectionString("DefaultConnection");
-       // private readonly ProductOps _productOps;
+        // private readonly ProductOps _productOps;
     }
 
     public async Task<List<Inventory>> GetFullInventory()

@@ -13,7 +13,7 @@ public class VendorInventoryOps
         _connectionString = config.GetConnectionString("DefaultConnection");
         _productOps = productOps;
         _vendorOps = vendorOps;
-        
+
     }
 
     public async Task<List<VendorInventoryLotReturn>> GetVendorsProducts(string vendorName)
@@ -22,7 +22,7 @@ public class VendorInventoryOps
 
         await using var conn = new NpgsqlConnection(_connectionString);
         await conn.OpenAsync();
-        
+
         var vendorID = await _vendorOps.GetVendorIDByName(vendorName);
         if (vendorID == null)
         {
@@ -63,7 +63,7 @@ public class VendorInventoryOps
     {
         await using var conn = new NpgsqlConnection(_connectionString);
         await conn.OpenAsync();
-        
+
         var query = new NpgsqlCommand("""
             SELECT EXISTS(
                 SELECT 1
@@ -83,7 +83,7 @@ public class VendorInventoryOps
     {
         await using var conn = new NpgsqlConnection(_connectionString);
         await conn.OpenAsync();
-        
+
         var query = new NpgsqlCommand("""
             UPDATE vendorinventorylot
             SET quantity_on_hand = quantity_on_hand + @quantity,
@@ -110,7 +110,8 @@ public class VendorInventoryOps
             return false;
         }
         var productID = await _productOps.GetProductIDByName(productName);
-        if (productID != null){
+        if (productID != null)
+        {
 
             var query = new NpgsqlCommand("""
                 UPDATE vendorinventorylot
@@ -132,7 +133,7 @@ public class VendorInventoryOps
     {
         await using var conn = new NpgsqlConnection(_connectionString);
         await conn.OpenAsync();
-        
+
         var vendorID = await _vendorOps.GetVendorIDByName(vendorName);
         if (vendorID == null)
         {
@@ -153,7 +154,7 @@ public class VendorInventoryOps
                 return increased && inv1;
             }
 
-           
+
             var insertExisting = new NpgsqlCommand("""
                 INSERT INTO vendorinventorylot(vendor_id, product_id, quantity_on_hand, unit_of_measurement)
                 VALUES(
@@ -174,10 +175,10 @@ public class VendorInventoryOps
 
             return rows > 0 && inv2;
         }
-        
-        
+
+
         // Add product to the DB (since it doesnt exist)
-        
+
         var addedProductID = await _productOps.AddProductRecord(productName, categoryName, unitOfMeasure, pricePerUnit);
         if (addedProductID != null)
         {
@@ -201,10 +202,10 @@ public class VendorInventoryOps
             var inv = await UpdateInventory(addedProductID.Value, quantity, pricePerUnit);
             return rows > 0 && inv;
         }
-        
+
         Console.WriteLine("Error adding product?");
         return false;
-        
+
     }
 
     public async Task<bool> UpdateInventory(int productID, int quantity, double pricePerUnit)
@@ -238,7 +239,7 @@ public class VendorInventoryOps
         await using var conn = new NpgsqlConnection(_connectionString);
         await conn.OpenAsync();
 
-       var cmd = new NpgsqlCommand("""
+        var cmd = new NpgsqlCommand("""
             UPDATE inventory
             SET total_stored_quantity = total_stored_quantity - @quantity
             WHERE product_id = @productID

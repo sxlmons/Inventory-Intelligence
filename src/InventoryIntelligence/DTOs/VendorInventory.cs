@@ -5,7 +5,7 @@ public class VendorInventoryLotReturn
 
     //public int? product_id { get; set; }
 
-    public string product_name {get; set;}
+    public string product_name { get; set; }
 
     public int quantity_on_hand { get; set; }
 

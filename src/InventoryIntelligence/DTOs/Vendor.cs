@@ -3,7 +3,7 @@ namespace InventoryIntelligence.DTOs;
 public class Vendor
 {
     public int vendor_id { get; set; }
-    
+
     public string name { get; set; }
 
     public string dominant_product { get; set; }

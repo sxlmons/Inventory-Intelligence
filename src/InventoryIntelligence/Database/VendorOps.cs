@@ -5,12 +5,12 @@ namespace InventoryIntelligence.Database;
 public class VendorOps
 {
     private readonly string _connectionString;
-   // private readonly ProductOps _productOps;
+    // private readonly ProductOps _productOps;
 
     public VendorOps(IConfiguration config)
     {
         _connectionString = config.GetConnectionString("DefaultConnection");
-       // private readonly ProductOps _productOps;
+        // private readonly ProductOps _productOps;
     }
 
     public async Task<int?> GetVendorIDByName(string vendorName)
@@ -67,7 +67,7 @@ public class VendorOps
             });
         }
 
-       
+
 
         return result;
     }
@@ -145,7 +145,7 @@ public class VendorOps
         query.Parameters.AddWithValue("email", contactEmail);
 
         var rows = await query.ExecuteNonQueryAsync();
-        
+
 
         return rows > 0;
     }

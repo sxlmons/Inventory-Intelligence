@@ -12,23 +12,23 @@ public class inventoryController : ControllerBase
     private readonly CategoryOps _categoryOps;
     private readonly InventoryOps _inventoryOps;
     private readonly VendorInventoryOps _vendorInvOps;
-    
+
     public inventoryController(CategoryOps CatOps, InventoryOps InvOps, VendorInventoryOps VenInvOps)
     {
         _categoryOps = CatOps;
         _inventoryOps = InvOps;
         _vendorInvOps = VenInvOps;
     }
-    
+
     [HttpGet]
     //public IActionResult all_items()
     public async Task<IActionResult> all_items()
     {
         var products = await _inventoryOps.GetFullInventory();
-        
+
         return Ok(products);
     }
-    
+
     /*
     [HttpGet]
     public IActionResult get_items_by_category(int category_id)
@@ -65,7 +65,7 @@ public class inventoryController : ControllerBase
     {
         foreach (var product in products)
             await _vendorInvOps.DecreaseQuantityOfVendorProductByAmount(product.product_name, vendor_name, 1);
-        
+
         return Ok();
     }
 
@@ -73,7 +73,7 @@ public class inventoryController : ControllerBase
     public async Task<IActionResult> get_item_categories()
     {
         List<Category> categories = await _categoryOps.GetCategories();
-        
+
         return Ok(categories);
     }
 }

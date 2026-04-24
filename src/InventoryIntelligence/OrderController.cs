@@ -9,22 +9,22 @@ namespace InventoryIntelligence;
 [Route("api/inventory_intelligence/[controller]/[action]")]
 public class vender_inventoryController : ControllerBase
 {
-    
+
     private readonly VendorInventoryOps _vendorInvOps;
     private readonly VendorOps _venOps;
-    
+
     public vender_inventoryController(VendorInventoryOps venInvOps, VendorOps venOps)
     {
         _vendorInvOps = venInvOps;
         _venOps = venOps;
     }
-    
+
     [HttpGet]
     //public IActionResult vendor_records(int vendor_id)
     public async Task<IActionResult> vendor_records(string vendor_name)
     {
         var products = await _vendorInvOps.GetVendorsProducts(vendor_name);
-        
+
         return Ok(products);
     }
 
@@ -32,7 +32,7 @@ public class vender_inventoryController : ControllerBase
     public async Task<IActionResult> register_vendor(Vendor vendor)
     {
         await _venOps.AddVendor(vendor.name, vendor.dominant_product, vendor.contact_email);
-        
+
         return Ok($"Vendor {vendor.name} registered");
     }
 
@@ -48,7 +48,7 @@ public class vender_inventoryController : ControllerBase
                                                     1, product.unit_of_measure,
                                                     product.price_per_unit);
         }
-        
+
         return Ok();
     }
 
@@ -57,7 +57,7 @@ public class vender_inventoryController : ControllerBase
     {
         foreach (var product in products)
             await _vendorInvOps.DecreaseQuantityOfVendorProductByAmount(product.product_name, vendor_name, 1);
-        
+
         return Ok();
     }
 }

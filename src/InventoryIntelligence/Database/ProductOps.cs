@@ -33,8 +33,8 @@ public class ProductOps
 
         await using var conn = new NpgsqlConnection(_connectionString);
         await conn.OpenAsync();
-        
-        
+
+
         var query = new NpgsqlCommand("""
             SELECT 
                 p.product_id,
@@ -96,7 +96,7 @@ public class ProductOps
     {
         await using var conn = new NpgsqlConnection(_connectionString);
         await conn.OpenAsync();
-        
+
         var normalizedName = NormalizeName(productName);
 
         var query = new NpgsqlCommand("""
@@ -112,9 +112,9 @@ public class ProductOps
 
         if (result == null || result == DBNull.Value)
         {
-            return null; 
+            return null;
         }
-        
+
         if (result != null || result != DBNull.Value)
         {
             if (unitOfMeasure == "kg" || unitOfMeasure == "ml" || unitOfMeasure == "lbs" || unitOfMeasure == "l")
@@ -135,7 +135,7 @@ public class ProductOps
 
                     if (dbUnit == "bundle" || dbUnit == "punnet" || dbUnit == "bag")
                     {
-                      //  Console.WriteLine("match 2");
+                        //  Console.WriteLine("match 2");
                         return null;
                     }
                 }
@@ -156,9 +156,9 @@ public class ProductOps
                 {
                     var dbUnit = reader1.GetString(0);
 
-                    if (dbUnit == "kg" || dbUnit == "ml" || dbUnit == "lbs"|| dbUnit == "l")
+                    if (dbUnit == "kg" || dbUnit == "ml" || dbUnit == "lbs" || dbUnit == "l")
                     {
-                       // Console.WriteLine("match 2");
+                        // Console.WriteLine("match 2");
                         return null;
                     }
                 }
@@ -172,22 +172,22 @@ public class ProductOps
     {
         await using var conn = new NpgsqlConnection(_connectionString);
         await conn.OpenAsync();
-        
+
         var categoryID = await _categoryOps.GetCategoryIDByName(categoryName);
         var normalizedName = NormalizeName(productName);
 
         if (categoryID == null)
         {
-          return null;  // Instead of this, maybe consider sending error message/adding the category manually? idk. I feel like every product should only have a category that exists already
+            return null;  // Instead of this, maybe consider sending error message/adding the category manually? idk. I feel like every product should only have a category that exists already
         }
 
         var existingProductId = await GetProductIdIfExists(normalizedName, unitOfMeasure);
-    
+
         if (existingProductId != null)
         {
             return null;
         }
-        
+
         var query = new NpgsqlCommand("""
             INSERT INTO product(product_name, category_id, unit_of_measure, price_per_unit)
             VALUES(
@@ -205,7 +205,7 @@ public class ProductOps
         query.Parameters.AddWithValue("price", pricePerUnit);
 
         var result = await query.ExecuteScalarAsync();
-        
+
         if (result == null)
         {
             return null;
@@ -214,5 +214,5 @@ public class ProductOps
         return (int)result;
         //return result == null ? null : (int?)Convert.ToInt32(result);
     }
-    
+
 }
